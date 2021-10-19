@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Hl7.Fhir.Model;
-using Hl7.Fhir.Utility;
 using Spark.Engine;
 using Spark.Engine.Core;
 using Spark.Engine.Store.Interfaces;
@@ -53,15 +51,10 @@ namespace Spark.Facade.Store
             return Entry.Create(key, resource);
         }
         
-        public Task<IList<Entry>> GetAsync(IEnumerable<IKey> localIdentifiers)
-        {
-            throw new System.NotImplementedException();
-        }
+        public Task<IList<Entry>> GetAsync(IEnumerable<IKey> localIdentifiers) =>  throw new NotImplementedException();
         
-        public void Add(Entry entry) => throw new System.NotImplementedException();
-
-        public Entry Get(IKey key) => throw new System.NotImplementedException();
-
-        public IList<Entry> Get(IEnumerable<IKey> localIdentifiers) => throw new System.NotImplementedException();
+        public void Add(Entry entry) => throw new NotImplementedException();
+        public Entry Get(IKey key) => throw new NotImplementedException();
+        public IList<Entry> Get(IEnumerable<IKey> localIdentifiers) => throw new NotImplementedException();
     }
 }
