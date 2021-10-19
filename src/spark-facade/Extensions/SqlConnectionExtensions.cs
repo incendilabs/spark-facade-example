@@ -42,6 +42,40 @@ namespace Spark.Facade.Extensions
 
             return $"{commandPart.TrimEnd(',')}){valuePart.TrimEnd(',')})";
         }
+
+        public static SqlCommand CreateUpdateCommandFrom(this SqlConnection connection, PatientModel patientModel, string primaryKeyName, object primaryKeyValue)
+        {
+            var command = connection.CreateCommand();
+            var patientModelType = patientModel.GetType();
+            // TODO: Hack to remove primary key from update command
+            var propertyInfos = patientModelType.GetProperties().Where(prop => prop.Name != primaryKeyName);
+            command.CommandText = $"{GenerateUpdateCommandText("Patient", propertyInfos)} WHERE {primaryKeyName}=@{primaryKeyName}";
+            command.Parameters.Add(new SqlParameter(primaryKeyName, primaryKeyValue));
+            foreach (var propertyInfo in propertyInfos)
+            {
+                object value = propertyInfo.GetValue(patientModel);
+                if (propertyInfo.PropertyType.IsArray && value != null)
+                {
+                    value = string.Join(' ', value);
+                }
+
+                command.Parameters.Add(new SqlParameter(propertyInfo.Name, value ?? DBNull.Value));
+            }
+
+            return command;
+        }
+
+        private static string GenerateUpdateCommandText(string tablename, IEnumerable<PropertyInfo> propertyInfos)
+        {
+            var commandPart = $"UPDATE {tablename} SET";
+            var valuePart = "";
+            foreach (var propertyInfo in propertyInfos)
+            {
+                valuePart += $"{propertyInfo.Name}=@{propertyInfo.Name},";
+            }
+
+            return $"{commandPart} {valuePart.TrimEnd(',')}";
+        }
         
         public static SqlCommand CreateSelectCommandByPrimaryKeyFrom(this SqlConnection connection, string tablename, string primaryKeyName, object primaryKeyValue, Type patientModelType)
         {
