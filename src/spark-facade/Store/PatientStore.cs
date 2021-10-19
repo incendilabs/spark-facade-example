@@ -28,7 +28,7 @@ namespace Spark.Facade.Store
             var resource = entry.Resource as Patient;
             var patientModel = resource.ToPatientModel();
 
-            using SqlConnection connection = new SqlConnection(_settings.ConnectionString);
+            await using var connection = new SqlConnection(_settings.ConnectionString);
             await connection.OpenAsync();
 
             var command = connection.CreateExistsCommandByPrimaryKeyFrom("Patient", "Id", entry.Key.ResourceId);
@@ -42,7 +42,7 @@ namespace Spark.Facade.Store
         
         public async Task<Entry> GetAsync(IKey key)
         {
-            using SqlConnection connection = new SqlConnection(_settings.ConnectionString);
+            await using var connection = new SqlConnection(_settings.ConnectionString);
             var command = connection.CreateSelectCommandByPrimaryKeyFrom("Patient", "Id", key.ResourceId, typeof(PatientModel));
 
             await connection.OpenAsync();
