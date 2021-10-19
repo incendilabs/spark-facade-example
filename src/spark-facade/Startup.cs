@@ -39,17 +39,18 @@ namespace Spark.Facade
             Configuration.Bind("StoreSettings", storeSettings);
             
             services.AddIdGenerator<GuidGenerator>();
-            services.AddStore<IFhirStore, SqlStore>(storeSettings);
-
             services.AddFhirFacade(options =>
             {
                 options.Settings = settings;
+                options.StoreSettings = storeSettings;
 
                 options.FhirExtensions.TryAdd<ICapabilityStatementService, CapabilityStatementService>();
                 options.FhirExtensions.TryAdd<IQueryService, QueryService>();
 
                 options.FhirServices.TryAdd<IAsyncFhirService, AsyncFhirService>();
                 options.FhirServices.TryAdd<PatientService>();
+
+                options.FhirStores.TryAdd<IFhirStore, PatientStore>();
 
                 options.MvcOption = mvcOptions =>
                 {
