@@ -26,8 +26,7 @@ namespace Spark.Facade.Controllers
         {
             ConditionalHeaderParameters parameters = new ConditionalHeaderParameters(Request);
             Key key = Key.Create(ResourceTypePatient, id);
-            var response = await _fhirService.ReadAsync(key, parameters).ConfigureAwait(false);
-            return new ActionResult<FhirResponse>(response);
+            return await _fhirService.ReadAsync(key, parameters);
         }
         
         [HttpPost]
@@ -39,7 +38,7 @@ namespace Spark.Facade.Controllers
         }
 
         [HttpGet]
-        public async Task<FhirResponse> Search()
+        public async Task<ActionResult<FhirResponse>> Search()
         {
             var searchparams = Request.GetSearchParams();
 
