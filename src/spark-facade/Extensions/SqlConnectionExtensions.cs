@@ -113,5 +113,13 @@ namespace Spark.Facade.Extensions
 
             return $"SELECT {parameters.TrimEnd(',')} FROM {tableName}";
         }
+
+        public static SqlCommand CreateExistsCommandByPrimaryKeyFrom(this SqlConnection connection, string tablename, string primaryKeyName, object primaryKeyValue)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = $"SELECT COUNT(*) FROM {tablename} WHERE {primaryKeyName}=@{primaryKeyName}";
+            command.Parameters.Add(new SqlParameter(primaryKeyName, primaryKeyValue));
+            return command;
+        }
     }
 }

@@ -27,15 +27,16 @@ namespace Spark.Facade.Store
         {
             var resource = entry.Resource as Patient;
             var patientModel = resource.ToPatientModel();
-            
+
             using SqlConnection connection = new SqlConnection(_settings.ConnectionString);
-            SqlCommand command = null;
-            if (entry.Key.HasResourceId())
-                command = connection.CreateUpdateCommandFrom(patientModel, "Id", entry.Key.ResourceId);
-            else
-                command = connection.CreateInsertCommandFrom(patientModel);
-            
             await connection.OpenAsync();
+
+            var command = connection.CreateExistsCommandByPrimaryKeyFrom("Patient", "Id", entry.Key.ResourceId);
+            var resourceExists = (int)await command.ExecuteScalarAsync() == 1;
+            command = resourceExists
+                ? connection.CreateUpdateCommandFrom(patientModel, "Id", entry.Key.ResourceId)
+                : connection.CreateInsertCommandFrom(patientModel);
+
             await command.ExecuteNonQueryAsync();
         }
         
