@@ -40,9 +40,9 @@ namespace Spark.Facade.Controllers
         [HttpGet]
         public async Task<ActionResult<FhirResponse>> Search()
         {
-            var searchparams = Request.GetSearchParams();
+            var searchParams = Request.GetSearchParams();
 
-            return await _fhirService.SearchAsync(ResourceTypePatient, searchparams);
+            return await _fhirService.SearchAsync(ResourceTypePatient, searchParams);
         }
     }
 }
