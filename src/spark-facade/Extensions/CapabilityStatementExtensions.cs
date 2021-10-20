@@ -44,8 +44,7 @@ namespace Spark.Facade.Extensions
                 .WithPurpose("Show case for a FHIR Facade Endpoint")
                 .WithCopyright("Copyright © 2021 Incendi")
                 .WithKind(CapabilityStatementKind.Instance)
-                .WithSoftware(name: "Spark", version: "1.6.0")
-                .WithAcceptFormat(new[] {"xml", "json"});
+                .WithSoftware(name: "Spark", version: "1.5.10");
         }
     }
 }

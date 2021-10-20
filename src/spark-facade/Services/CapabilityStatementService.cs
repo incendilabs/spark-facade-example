@@ -6,16 +6,17 @@ using CapabilityStatementBuilder = Spark.Engine.Core.CapabilityStatementBuilder;
 
 namespace Spark.Facade.Services
 {
+    /// <inheritdoc />
     public class CapabilityStatementService : ICapabilityStatementService
     {
         public CapabilityStatement GetSparkCapabilityStatement(string version)
         {
             return new CapabilityStatementBuilder()
                 .CreateCapabilityStatementHeader()
+                .WithAcceptFormat(new[] {"xml", "json"})
                 .WithRest(() => new RestComponentBuilder()
                     .WithMode(CapabilityStatement.RestfulCapabilityMode.Server)
                     .WithDocumentation("Main FHIR endpoint for Spark Facade Example")
-                    .WithSecurity(cors:true)
                     .WithResource(new ResourceComponentBuilder()
                         .WithType(ResourceType.Patient)
                         .WithProfile("http://hl7.no/fhir/StructureDefinition/no-basis-Patient")
