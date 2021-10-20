@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Spark.Engine;
 using Spark.Facade.Services;
@@ -37,7 +33,7 @@ namespace Spark.Facade
             Configuration.Bind("SparkSettings", settings);
             var storeSettings = new StoreSettings();
             Configuration.Bind("StoreSettings", storeSettings);
-            
+
             services.AddIdGenerator<GuidGenerator>();
             services.AddFhirFacade(options =>
             {
@@ -69,18 +65,7 @@ namespace Spark.Facade
                 app.UseDeveloperExceptionPage();
             }
 
-            // app.UseRouting();
-
             app.UseFhir(builder => builder.MapRoute(name: "default", template: "{controller}/{action}/{id?}"));
-
-            // app.UseEndpoints(endpoints =>
-            // {
-            //     endpoints.MapControllerRoute(
-            //         name: "default",
-            //         pattern: "{controller}/{action}{id?}"
-            //     );
-            // });
-            //app.UseEndpoints(endpoints => { endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Hello World!"); }); });
         }
     }
 }
