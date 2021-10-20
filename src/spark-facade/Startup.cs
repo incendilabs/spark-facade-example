@@ -42,6 +42,7 @@ namespace Spark.Facade
 
                 options.FhirExtensions.TryAdd<ICapabilityStatementService, CapabilityStatementService>();
                 options.FhirExtensions.TryAdd<IQueryService, QueryService>();
+                options.FhirExtensions.TryAdd<IPatchService, PatchService>();
 
                 options.FhirServices.TryAdd<IAsyncFhirService, AsyncFhirService>();
                 options.FhirServices.TryAdd<PatientService>();
