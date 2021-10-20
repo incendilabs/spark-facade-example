@@ -48,7 +48,7 @@ namespace Spark.Facade.Extensions
             var command = connection.CreateCommand();
             var patientModelType = patientModel.GetType();
             // TODO: Hack to remove primary key from update command
-            var propertyInfos = patientModelType.GetProperties().Where(prop => prop.Name != primaryKeyName);
+            var propertyInfos = patientModelType.GetProperties().Where(prop => prop.Name != primaryKeyName).ToArray();
             command.CommandText = $"{GenerateUpdateCommandText("Patient", propertyInfos)} WHERE {primaryKeyName}=@{primaryKeyName}";
             command.Parameters.Add(new SqlParameter(primaryKeyName, primaryKeyValue));
             foreach (var propertyInfo in propertyInfos)

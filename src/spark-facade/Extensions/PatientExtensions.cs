@@ -10,33 +10,36 @@ namespace Spark.Facade.Extensions
     {
         public static PatientModel ToPatientModel(this Patient resource)
         {
-            var patientModel = new PatientModel();
-            patientModel.Id = Guid.Parse(resource.Id);
-            patientModel.Ssn = resource.Identifier.Where(identifier => identifier.System == Identificators.SYSTEM_SSN).FirstOrDefault()?.Value;
-            var name = resource.Name.Where(name => (name.Use == HumanName.NameUse.Official || !name.Use.HasValue)).FirstOrDefault();
-            patientModel.Given = string.Join(" ", name?.Given);
-            patientModel.Surname =  name?.Family;
-            patientModel.Birthdate = resource.BirthDate;
-            patientModel.Gender = resource.Gender?.GetLiteral();
-            patientModel.Citizenship = (resource.Extension
-                ?.Where(e => e.Url == Identificators.EXTENSION_CITIZENSHIP).FirstOrDefault()
-                ?.Extension.Where(e => e.Url == "code").FirstOrDefault()?.Value as CodeableConcept)
-                ?.Coding.Where(c => c.System == Identificators.SYSTEM_COUNTRYCODES).FirstOrDefault()
-                ?.Code;
-            patientModel.Phone = resource.Telecom?.Where(t => t.System == ContactPoint.ContactPointSystem.Phone).FirstOrDefault()?.Value;
-            var homeAddress = resource.Address?.Where(a => a.Use == Address.AddressUse.Home).FirstOrDefault();
-            patientModel.MunicipalityCode = (homeAddress
-                ?.Extension?.Where(e => e.Url == Identificators.EXTENSION_PROPERTYINFORMATION).FirstOrDefault()
-                ?.Extension.Where(e => e.Url == "municipality").FirstOrDefault()
-                ?.Value as Coding)
-                ?.Code;
-            patientModel.AddressLine = homeAddress.Line.FirstOrDefault();
-            patientModel.ZipCode = homeAddress.PostalCode;
-            patientModel.City = homeAddress.City;
-            patientModel.District = homeAddress.District;
-            patientModel.Country = homeAddress.Country;
+            var name = resource.Name.FirstOrDefault(name => (name.Use == HumanName.NameUse.Official || !name.Use.HasValue));
+            var homeAddress = resource.Address?.FirstOrDefault(a => a.Use == Address.AddressUse.Home);
 
-            return patientModel;
+            return new PatientModel
+            {
+                Id = Guid.Parse(resource.Id),
+                Ssn = resource.Identifier.FirstOrDefault(identifier => identifier.System == Identificators.SYSTEM_SSN)
+                    ?.Value,
+                Given = string.Join(" ", name?.Given),
+                Surname = name?.Family,
+                Birthdate = resource.BirthDate,
+                Gender = resource.Gender?.GetLiteral(),
+                Citizenship = ((resource
+                            ?.Extension?.FirstOrDefault(e => e.Url == Identificators.EXTENSION_CITIZENSHIP)
+                            ?.Extension?.FirstOrDefault(e => e.Url == "code")
+                            ?.Value as CodeableConcept)
+                        ?.Coding)?.FirstOrDefault(c => c.System == Identificators.SYSTEM_COUNTRYCODES)
+                    ?.Code,
+                Phone = resource.Telecom?.FirstOrDefault(t => t.System == ContactPoint.ContactPointSystem.Phone)?.Value,
+                MunicipalityCode = (homeAddress
+                        ?.Extension?.FirstOrDefault(e => e.Url == Identificators.EXTENSION_PROPERTYINFORMATION)
+                        ?.Extension?.FirstOrDefault(e => e.Url == "municipality")
+                        ?.Value as Coding)
+                    ?.Code,
+                AddressLine = homeAddress.Line.FirstOrDefault(),
+                ZipCode = homeAddress.PostalCode,
+                City = homeAddress.City,
+                District = homeAddress.District,
+                Country = homeAddress.Country,
+            };
         }
     }
 }

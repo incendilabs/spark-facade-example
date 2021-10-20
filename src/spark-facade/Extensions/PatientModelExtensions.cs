@@ -16,6 +16,8 @@ namespace Spark.Facade.Extensions
                 {
                     Profile = new[] {Identificators.PROFILE_PATIENT},
                 },
+                BirthDate = string.IsNullOrWhiteSpace(patientModel.Birthdate) ? null : patientModel.Birthdate,
+                Gender = string.IsNullOrWhiteSpace(patientModel.Gender) ? null : EnumUtility.ParseLiteral<AdministrativeGender>(patientModel.Gender),
             };
             if (!string.IsNullOrWhiteSpace(patientModel.Citizenship))
             {
@@ -70,8 +72,6 @@ namespace Spark.Facade.Extensions
                 };
             }
 
-            resource.BirthDate = string.IsNullOrWhiteSpace(patientModel.Birthdate) ? null : patientModel.Birthdate;
-            resource.Gender = string.IsNullOrWhiteSpace(patientModel.Gender) ? null : EnumUtility.ParseLiteral<AdministrativeGender>(patientModel.Gender);
             if (!string.IsNullOrWhiteSpace(patientModel.Phone))
             {
                 resource.Telecom = new List<ContactPoint>
