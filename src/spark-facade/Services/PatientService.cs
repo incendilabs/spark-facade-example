@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Spark.Engine;
 using Spark.Engine.Core;
 using Spark.Engine.FhirResponseFactory;
 using Spark.Engine.Service;
@@ -9,23 +8,18 @@ using System.Threading.Tasks;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Rest;
 using Spark.Engine.Extensions;
-using Spark.Engine.Service.Abstractions;
 using Task = System.Threading.Tasks.Task;
 
 namespace Spark.Facade.Services
 {
     public class PatientService : AsyncFhirService
     {
-        private readonly StoreSettings _storeSettings;
-
         public PatientService(
-            StoreSettings storeSettings, 
             IFhirServiceExtension[] extensions, 
             IFhirResponseFactory responseFactory, 
             ICompositeServiceListener serviceListener = null) 
             : base(extensions, responseFactory, serviceListener)
         {
-            _storeSettings = storeSettings;
         }
 
         public override Task<FhirResponse> SearchAsync(string type, SearchParams searchCommand, int pageIndex = 0)

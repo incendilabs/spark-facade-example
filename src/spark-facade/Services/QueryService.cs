@@ -1,5 +1,4 @@
 ﻿/* 
- * Copyright (c) 2016, Furore (info@furore.com) and contributors
  * Copyright (c) 2021, Incendi (info@incendi.no) and contributors
  * See the file CONTRIBUTORS for details.
  * 
@@ -31,12 +30,12 @@ namespace Spark.Facade.Services
         
         public async IAsyncEnumerable<Entry> GetAsync(string type, SearchParams searchParams)
         {
-            var param = searchParams.Parameters.Where(p => p.Item1 == "identifier").FirstOrDefault();
+            var param = searchParams.Parameters.FirstOrDefault(p => p.Item1 == "identifier");
             if (param == null)
                 yield break;
 
             var criteriaValue = param.Item2.Split('|')[1];
-            using var connection = new SqlConnection(_settings.ConnectionString);
+            await using var connection = new SqlConnection(_settings.ConnectionString);
             var command = connection.CreateSelectCommandWithCriteriaFrom("Patient", new Dictionary<string, object> {{"Ssn", criteriaValue}}, typeof(PatientModel));
             await connection.OpenAsync();
             var reader = await command.ExecuteReaderAsync();
