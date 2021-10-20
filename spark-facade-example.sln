@@ -2,6 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "spark-facade", "src\spark-facade\spark-facade.csproj", "{14F00195-2361-4F2C-B755-937774264BFA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{7D061799-11D7-4DEB-A546-0271B61269F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "database", "database", "{BD769CF0-08F4-4BAD-8085-A936C2B554D1}"
+ProjectSection(SolutionItems) = preProject
+	database\schema.sql = database\schema.sql
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +19,8 @@ Global
 		{14F00195-2361-4F2C-B755-937774264BFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14F00195-2361-4F2C-B755-937774264BFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14F00195-2361-4F2C-B755-937774264BFA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BD769CF0-08F4-4BAD-8085-A936C2B554D1} = {7D061799-11D7-4DEB-A546-0271B61269F2}
 	EndGlobalSection
 EndGlobal
