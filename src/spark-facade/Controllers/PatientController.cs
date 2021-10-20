@@ -24,15 +24,15 @@ namespace Spark.Facade.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<FhirResponse>> Read(string id)
         {
-            ConditionalHeaderParameters parameters = new ConditionalHeaderParameters(Request);
-            Key key = Key.Create(ResourceTypePatient, id);
+            var parameters = new ConditionalHeaderParameters(Request);
+            var key = Key.Create(ResourceTypePatient, id);
             return await _fhirService.ReadAsync(key, parameters);
         }
         
         [HttpPost]
         public async Task<ActionResult<FhirResponse>> Create([FromBody] Patient resource)
         {
-            Key key = Key.Create(ResourceTypePatient, resource?.Id);
+            var key = Key.Create(ResourceTypePatient, resource?.Id);
 
             return await _fhirService.CreateAsync(key, resource);
         }
