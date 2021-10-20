@@ -23,7 +23,8 @@ CREATE TABLE [dbo].[Patient](
 	[City] [nvarchar](50) NULL,
 	[District] [nvarchar](50) NULL,
 	[Country] [nvarchar](2) NULL,
- CONSTRAINT [PK_Patient] PRIMARY KEY CLUSTERED 
+	[Contact] [nvarchar](50) NULL,
+ CONSTRAINT [PK_Patient] PRIMARY KEY CLUSTERED
 (
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]

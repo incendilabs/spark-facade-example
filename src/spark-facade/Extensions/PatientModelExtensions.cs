@@ -136,6 +136,20 @@ namespace Spark.Facade.Extensions
                 };
             }
 
+            if (!string.IsNullOrWhiteSpace(patientModel.Contact))
+            {
+                resource.Contact = new List<Patient.ContactComponent>
+                {
+                    new Patient.ContactComponent
+                    {
+                        Name = new HumanName
+                        {
+                            Text = patientModel.Contact
+                        }
+                    }
+                };
+            }
+
             return resource;
         }
     }

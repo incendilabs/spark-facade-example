@@ -39,6 +39,7 @@ namespace Spark.Facade.Extensions
                 City = homeAddress.City,
                 District = homeAddress.District,
                 Country = homeAddress.Country,
+                Contact = resource.Contact?.FirstOrDefault()?.Name?.Text
             };
         }
     }
