@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -76,16 +82,16 @@ namespace Spark.Facade.Extensions
 
             return $"{commandPart} {valuePart.TrimEnd(',')}";
         }
-        
+
         public static SqlCommand CreateSelectCommandByPrimaryKeyFrom(this SqlConnection connection, string tablename, string primaryKeyName, object primaryKeyValue, Type patientModelType)
         {
             var propertyInfos = patientModelType.GetProperties();
             var commandText = GenerateSelectCommandText(tablename, propertyInfos);
-            
+
             var command = connection.CreateCommand();
             command.CommandText = $"{commandText} WHERE {primaryKeyName}=@{primaryKeyName}";
             command.Parameters.Add(new SqlParameter(primaryKeyName, primaryKeyValue));
-            
+
             return command;
         }
 
@@ -95,7 +101,7 @@ namespace Spark.Facade.Extensions
             var commandText = GenerateSelectCommandText(tablename, propertyInfos);
 
             var command = connection.CreateCommand();
-            // TODO: Currently just ignoring any other parameters beyond the first one 
+            // TODO: Currently just ignoring any other parameters beyond the first one
             var criteria = crtierias.FirstOrDefault();
             command.CommandText = $"{commandText} WHERE {criteria.Key}=@{criteria.Key}";
             command.Parameters.Add(new SqlParameter(criteria.Key, criteria.Value));

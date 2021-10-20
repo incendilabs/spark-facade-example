@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Spark.Facade
 {

@@ -1,4 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spark.Engine;

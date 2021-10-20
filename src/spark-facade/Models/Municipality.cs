@@ -1,4 +1,10 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+using System.Collections.Generic;
 
 namespace Spark.Facade.Models
 {
@@ -14,7 +20,7 @@ namespace Spark.Facade.Models
         {
             return _municipalityMap.TryGetValue(key, out value);
         }
-        
+
         public static string GetValue(string code)
         {
             _municipalityMap.TryGetValue(code, out var value);

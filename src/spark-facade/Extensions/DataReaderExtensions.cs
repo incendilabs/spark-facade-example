@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -36,7 +42,7 @@ namespace Spark.Facade.Extensions
                     //
                     var propInfo = transformToType.GetProperty(reader.GetName(i));
                     if (propInfo == null) continue;
-                    
+
                     var value = reader.GetValue(i);
                     if(value == DBNull.Value) continue;
 

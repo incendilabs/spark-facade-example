@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+using System;
 using Hl7.Fhir.Model;
 using Spark.Core;
 

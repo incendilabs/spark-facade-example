@@ -1,4 +1,10 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+using System.Collections.Generic;
 using System.Linq;
 using Spark.Engine.Core;
 using Spark.Engine.FhirResponseFactory;
@@ -15,9 +21,9 @@ namespace Spark.Facade.Services
     public class PatientService : AsyncFhirService
     {
         public PatientService(
-            IFhirServiceExtension[] extensions, 
-            IFhirResponseFactory responseFactory, 
-            ICompositeServiceListener serviceListener = null) 
+            IFhirServiceExtension[] extensions,
+            IFhirResponseFactory responseFactory,
+            ICompositeServiceListener serviceListener = null)
             : base(extensions, responseFactory, serviceListener)
         {
         }

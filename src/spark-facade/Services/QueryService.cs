@@ -1,15 +1,12 @@
-﻿/* 
- * Copyright (c) 2021, Incendi (info@incendi.no) and contributors
- * See the file CONTRIBUTORS for details.
- * 
- * This file is licensed under the BSD 3-Clause license
- * available at https://raw.githubusercontent.com/FirelyTeam/spark/stu3/master/LICENSE
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
  */
 
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using Hl7.Fhir.Rest;
 using Spark.Engine;
 using Spark.Engine.Core;
@@ -27,7 +24,7 @@ namespace Spark.Facade.Services
         {
             _settings = settings;
         }
-        
+
         public async IAsyncEnumerable<Entry> GetAsync(string type, SearchParams searchParams)
         {
             var param = searchParams.Parameters.FirstOrDefault(p => p.Item1 == "identifier");

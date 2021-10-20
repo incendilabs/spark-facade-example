@@ -1,4 +1,10 @@
-﻿using System.Collections.Generic;
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+using System.Collections.Generic;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Utility;
 using Spark.Facade.Models;

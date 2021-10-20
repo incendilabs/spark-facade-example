@@ -1,4 +1,10 @@
-﻿using Hl7.Fhir.Model;
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+using Hl7.Fhir.Model;
 using Spark.Engine.Core;
 using Spark.Engine.Service.FhirServiceExtensions;
 using Spark.Facade.Extensions;

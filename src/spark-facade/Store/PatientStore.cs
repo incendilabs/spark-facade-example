@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+ * Copyright (c) 2021, Incendi (info@incendi.no)
+ *
+ * SPDX-License-Identifier: BSD-2-Clause
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -22,7 +28,7 @@ namespace Spark.Facade.Store
         {
             _settings = settings;
         }
-        
+
         public async Task AddAsync(Entry entry)
         {
             var resource = entry.Resource as Patient;
@@ -39,7 +45,7 @@ namespace Spark.Facade.Store
 
             await command.ExecuteNonQueryAsync();
         }
-        
+
         public async Task<Entry> GetAsync(IKey key)
         {
             await using var connection = new SqlConnection(_settings.ConnectionString);
@@ -47,17 +53,17 @@ namespace Spark.Facade.Store
 
             await connection.OpenAsync();
             var reader = await command.ExecuteReaderAsync();
-            
+
             var patientModel = reader.TransformTo<PatientModel>().FirstOrDefault();
             if (patientModel == null) throw new SparkException(HttpStatusCode.NotFound, $"No 'Patient' resource with id {key.ResourceId} was found.");
 
             var resource = patientModel.ToPatient();
-            
+
             return Entry.Create(key, resource);
         }
-        
+
         public Task<IList<Entry>> GetAsync(IEnumerable<IKey> localIdentifiers) =>  throw new NotImplementedException();
-        
+
         public void Add(Entry entry) => throw new NotImplementedException();
         public Entry Get(IKey key) => throw new NotImplementedException();
         public IList<Entry> Get(IEnumerable<IKey> localIdentifiers) => throw new NotImplementedException();
