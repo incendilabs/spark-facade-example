@@ -9,7 +9,7 @@
     <ItemGroup>
       <PackageReference Include="Spark.Engine.R4" Version="1.5.12" />
       <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
-      <PackageReference Include="System.Linq.Async" Version="5.1.0" />
+      <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     </ItemGroup>
 
 </Project>
