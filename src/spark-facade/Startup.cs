@@ -1,12 +1,11 @@
 /*
- * Copyright (c) 2021, Incendi (info@incendi.no)
+ * Copyright (c) 2021-2022, Incendi (info@incendi.no)
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,7 +60,7 @@ namespace Spark.Facade
                     mvcOptions.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
                     mvcOptions.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
                 };
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
