@@ -62,6 +62,16 @@ namespace Spark.Facade.Store
             return Entry.Create(key, resource);
         }
 
+        public IList<Entry> Get(IEnumerable<IKey> localIdentifiers, IEnumerable<string> elements = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<Entry>> GetAsync(IEnumerable<IKey> localIdentifiers, IEnumerable<string> elements = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IList<Entry>> GetAsync(IEnumerable<IKey> localIdentifiers) =>  throw new NotImplementedException();
 
         public void Add(Entry entry) => throw new NotImplementedException();
