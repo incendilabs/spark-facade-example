@@ -20,7 +20,7 @@ namespace Spark.Facade.Controllers
     {
         private const string ResourceTypePatient = "Patient";
 
-        private readonly IAsyncFhirService _fhirService;
+        private readonly IFhirService _fhirService;
 
         public PatientController(PatientService service)
         {

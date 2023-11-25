@@ -16,10 +16,10 @@ namespace Spark.Facade.Controllers
     [Route("fhir")]
     public class SystemController : ApiController
     {
-        private readonly IAsyncFhirService _fhirService;
+        private readonly IFhirService _fhirService;
         private readonly SparkSettings _settings;
 
-        public SystemController(IAsyncFhirService service, SparkSettings settings)
+        public SystemController(IFhirService service, SparkSettings settings)
         {
             _fhirService = service;
             _settings = settings;

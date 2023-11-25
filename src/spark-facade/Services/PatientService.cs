@@ -18,7 +18,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Spark.Facade.Services
 {
-    public class PatientService : AsyncFhirService
+    public class PatientService : FhirService
     {
         public PatientService(
             IFhirServiceExtension[] extensions,
