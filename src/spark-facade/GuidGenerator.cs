@@ -10,7 +10,7 @@ using Spark.Core;
 
 namespace Spark.Facade
 {
-    public class GuidGenerator : IGenerator
+    public class GuidGenerator : IIdentityGenerator
     {
         public string NextResourceId(Resource resource)
         {

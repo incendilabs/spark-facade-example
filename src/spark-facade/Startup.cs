@@ -49,7 +49,7 @@ namespace Spark.Facade
                 options.FhirExtensions.TryAdd<IQueryService, QueryService>();
                 options.FhirExtensions.TryAdd<IPatchService, PatchService>();
 
-                options.FhirServices.TryAdd<IAsyncFhirService, AsyncFhirService>();
+                options.FhirServices.TryAdd<IFhirService, FhirService>();
                 options.FhirServices.TryAdd<PatientService>();
 
                 options.FhirStores.TryAdd<IFhirStore, PatientStore>();
