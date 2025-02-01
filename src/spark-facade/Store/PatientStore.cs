@@ -6,11 +6,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Hl7.Fhir.Model;
+using Microsoft.Data.SqlClient;
 using Spark.Engine;
 using Spark.Engine.Core;
 using Spark.Engine.Store.Interfaces;

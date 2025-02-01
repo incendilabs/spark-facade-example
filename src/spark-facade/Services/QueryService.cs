@@ -5,9 +5,9 @@
  */
 
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using Hl7.Fhir.Rest;
+using Microsoft.Data.SqlClient;
 using Spark.Engine;
 using Spark.Engine.Core;
 using Spark.Engine.Service.FhirServiceExtensions;
