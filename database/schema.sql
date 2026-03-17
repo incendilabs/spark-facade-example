@@ -1,3 +1,6 @@
+CREATE DATABASE [SparkFacadeExample]
+GO
+
 USE [SparkFacadeExample]
 GO
 
