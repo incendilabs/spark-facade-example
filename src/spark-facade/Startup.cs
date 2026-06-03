@@ -19,28 +19,28 @@ using Spark.Engine.Store.Interfaces;
 using Spark.Facade.Store;
 using CapabilityStatementService = Spark.Facade.Services.CapabilityStatementService;
 
-namespace Spark.Facade
+namespace Spark.Facade;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        Configuration = configuration;
+    }
 
-        public IConfiguration Configuration { get; set; }
+    private IConfiguration Configuration { get; set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
-        {
-            var settings = new SparkSettings();
-            Configuration.Bind("SparkSettings", settings);
-            var storeSettings = new StoreSettings();
-            Configuration.Bind("StoreSettings", storeSettings);
+    // This method gets called by the runtime. Use this method to add services to the container.
+    // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+    public void ConfigureServices(IServiceCollection services)
+    {
+        var settings = new SparkSettings();
+        Configuration.Bind("SparkSettings", settings);
+        var storeSettings = new StoreSettings();
+        Configuration.Bind("StoreSettings", storeSettings);
 
-            services.AddIdGenerator<GuidGenerator>();
-            services.AddFhirFacadeWithMvc(options =>
+        services.AddIdGenerator<GuidGenerator>();
+        services.AddFhirFacadeWithMvc(options =>
             {
                 options.Settings = settings;
                 options.StoreSettings = storeSettings;
@@ -60,18 +60,15 @@ namespace Spark.Facade
                     mvcOptions.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
                     mvcOptions.OutputFormatters.RemoveType<SystemTextJsonOutputFormatter>();
                 };
-            });
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
             }
+        );
+    }
 
-            app.UseFhirWithMvc(builder => builder.MapRoute(name: "default", template: "{controller}/{action}/{id?}"));
-        }
+    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+
+        app.UseFhirWithMvc(builder => builder.MapRoute("default", "{controller}/{action}/{id?}"));
     }
 }

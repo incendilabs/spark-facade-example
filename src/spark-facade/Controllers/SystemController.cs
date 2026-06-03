@@ -10,24 +10,23 @@ using Spark.Engine;
 using Spark.Engine.Core;
 using Spark.Engine.Service;
 
-namespace Spark.Facade.Controllers
+namespace Spark.Facade.Controllers;
+
+[Route("fhir")]
+public class SystemController : ControllerBase
 {
-    [Route("fhir")]
-    public class SystemController : ControllerBase
+    private readonly IFhirService _fhirService;
+    private readonly SparkSettings _settings;
+
+    public SystemController(IFhirService service, SparkSettings settings)
     {
-        private readonly IFhirService _fhirService;
-        private readonly SparkSettings _settings;
+        _fhirService = service;
+        _settings = settings;
+    }
 
-        public SystemController(IFhirService service, SparkSettings settings)
-        {
-            _fhirService = service;
-            _settings = settings;
-        }
-
-        [HttpGet("metadata")]
-        public async Task<ActionResult<FhirResponse>> Metadata()
-        {
-            return await _fhirService.CapabilityStatementAsync(_settings.Version);
-        }
+    [HttpGet("metadata")]
+    public async Task<ActionResult<FhirResponse>> Metadata()
+    {
+        return await _fhirService.CapabilityStatementAsync(_settings.Version);
     }
 }

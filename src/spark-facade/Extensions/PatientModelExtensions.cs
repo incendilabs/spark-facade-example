@@ -9,154 +9,139 @@ using Hl7.Fhir.Model;
 using Hl7.Fhir.Utility;
 using Spark.Facade.Models;
 
-namespace Spark.Facade.Extensions
+namespace Spark.Facade.Extensions;
+
+public static class PatientModelExtensions
 {
-    public static class PatientModelExtensions
+    public static Resource ToPatient(this PatientModel patientModel)
     {
-        public static Resource ToPatient(this PatientModel patientModel)
+        var resource = new Patient
         {
-            var resource = new Patient
+            Id = patientModel.Id.ToString("D"),
+            Meta = new Meta
             {
-                Id = patientModel.Id.ToString("D"),
-                Meta = new Meta
-                {
-                    Profile = new[] {Identificators.PROFILE_PATIENT},
-                },
-                BirthDate = string.IsNullOrWhiteSpace(patientModel.Birthdate) ? null : patientModel.Birthdate,
-                Gender = string.IsNullOrWhiteSpace(patientModel.Gender) ? null : EnumUtility.ParseLiteral<AdministrativeGender>(patientModel.Gender),
-            };
-            if (!string.IsNullOrWhiteSpace(patientModel.Citizenship))
+                Profile = new[] { Identificators.PROFILE_PATIENT }
+            },
+            BirthDate = string.IsNullOrWhiteSpace(patientModel.Birthdate) ? null : patientModel.Birthdate,
+            Gender = string.IsNullOrWhiteSpace(patientModel.Gender)
+                ? null
+                : EnumUtility.ParseLiteral<AdministrativeGender>(patientModel.Gender)
+        };
+        if (!string.IsNullOrWhiteSpace(patientModel.Citizenship))
+            resource.Extension = new List<Extension>
             {
-                resource.Extension = new List<Extension>
+                new()
                 {
-                    new Extension
+                    Url = Identificators.EXTENSION_CITIZENSHIP,
+                    Extension = new List<Extension>
                     {
-                        Url = Identificators.EXTENSION_CITIZENSHIP,
-                        Extension = new List<Extension>
+                        new()
                         {
-                            new Extension
+                            Url = "code",
+                            Value = new CodeableConcept
                             {
-                                Url = "code",
-                                Value = new CodeableConcept
+                                Coding = new List<Coding>
                                 {
-                                    Coding = new List<Coding>
+                                    new()
                                     {
-                                        new Coding
-                                        {
-                                            System = Identificators.SYSTEM_COUNTRYCODES,
-                                            Code = patientModel.Citizenship,
-                                        }
+                                        System = Identificators.SYSTEM_COUNTRYCODES,
+                                        Code = patientModel.Citizenship
                                     }
                                 }
                             }
                         }
                     }
-                };
-            }
+                }
+            };
 
-            if (!string.IsNullOrWhiteSpace(patientModel.Ssn))
+        if (!string.IsNullOrWhiteSpace(patientModel.Ssn))
+            resource.Identifier = new List<Identifier>
             {
-                resource.Identifier = new List<Identifier>
+                new()
                 {
-                    new Identifier
+                    System = Identificators.SYSTEM_SSN,
+                    Value = patientModel.Ssn
+                }
+            };
+
+        if (!string.IsNullOrWhiteSpace(patientModel.Given) || !string.IsNullOrWhiteSpace(patientModel.Surname))
+            resource.Name = new List<HumanName>
+            {
+                new()
+                {
+                    Given = patientModel.Given.Split(' '),
+                    Family = patientModel.Surname
+                }
+            };
+
+        if (!string.IsNullOrWhiteSpace(patientModel.Phone))
+            resource.Telecom = new List<ContactPoint>
+            {
+                new()
+                {
+                    System = ContactPoint.ContactPointSystem.Phone,
+                    Use = ContactPoint.ContactPointUse.Home,
+                    Value = patientModel.Phone
+                }
+            };
+
+        Address address = null;
+        if (!string.IsNullOrWhiteSpace(patientModel.AddressLine)
+            || !string.IsNullOrWhiteSpace(patientModel.Citizenship)
+            || !string.IsNullOrWhiteSpace(patientModel.City)
+            || !string.IsNullOrWhiteSpace(patientModel.District)
+            || !string.IsNullOrWhiteSpace(patientModel.ZipCode)
+            || !string.IsNullOrWhiteSpace(patientModel.Country))
+            address = new Address
+            {
+                Use = Address.AddressUse.Home,
+                Line = string.IsNullOrWhiteSpace(patientModel.AddressLine) ? null : new[] { patientModel.AddressLine },
+                City = string.IsNullOrWhiteSpace(patientModel.City) ? null : patientModel.City,
+                District = string.IsNullOrWhiteSpace(patientModel.District) ? null : patientModel.District,
+                PostalCode = string.IsNullOrWhiteSpace(patientModel.ZipCode) ? null : patientModel.ZipCode,
+                Country = string.IsNullOrWhiteSpace(patientModel.Country) ? null : patientModel.Country
+            };
+
+        if (!string.IsNullOrWhiteSpace(patientModel.MunicipalityCode))
+            address.Extension = new List<Extension>
+            {
+                new()
+                {
+                    Url = Identificators.EXTENSION_PROPERTYINFORMATION,
+                    Extension = new List<Extension>
                     {
-                        System = Identificators.SYSTEM_SSN,
-                        Value = patientModel.Ssn,
-                    }
-                };
-            }
-
-            if (!string.IsNullOrWhiteSpace(patientModel.Given) || !string.IsNullOrWhiteSpace(patientModel.Surname))
-            {
-                resource.Name = new List<HumanName>()
-                {
-                    new HumanName()
-                    {
-                        Given = patientModel.Given.Split(' '),
-                        Family = patientModel.Surname,
-                    }
-                };
-            }
-
-            if (!string.IsNullOrWhiteSpace(patientModel.Phone))
-            {
-                resource.Telecom = new List<ContactPoint>
-                {
-                    new ContactPoint
-                    {
-                        System = ContactPoint.ContactPointSystem.Phone,
-                        Use = ContactPoint.ContactPointUse.Home,
-                        Value = patientModel.Phone,
-                    }
-                };
-            }
-
-            Address address = null;
-            if (!string.IsNullOrWhiteSpace(patientModel.AddressLine)
-                || !string.IsNullOrWhiteSpace(patientModel.Citizenship)
-                || !string.IsNullOrWhiteSpace(patientModel.City)
-                || !string.IsNullOrWhiteSpace(patientModel.District)
-                || !string.IsNullOrWhiteSpace(patientModel.ZipCode)
-                || !string.IsNullOrWhiteSpace(patientModel.Country))
-            {
-                address = new Address
-                {
-                    Use = Address.AddressUse.Home,
-                    Line = string.IsNullOrWhiteSpace(patientModel.AddressLine) ? null : new[] {patientModel.AddressLine},
-                    City = string.IsNullOrWhiteSpace(patientModel.City) ? null : patientModel.City,
-                    District = string.IsNullOrWhiteSpace(patientModel.District) ? null : patientModel.District,
-                    PostalCode = string.IsNullOrWhiteSpace(patientModel.ZipCode) ? null : patientModel.ZipCode,
-                    Country = string.IsNullOrWhiteSpace(patientModel.Country) ? null : patientModel.Country,
-                };
-            }
-
-            if (!string.IsNullOrWhiteSpace(patientModel.MunicipalityCode))
-            {
-                address.Extension = new List<Extension>
-                {
-                    new Extension
-                    {
-                        Url = Identificators.EXTENSION_PROPERTYINFORMATION,
-                        Extension = new List<Extension>
+                        new()
                         {
-                            new Extension
+                            Url = "municipality",
+                            Value = new Coding
                             {
-                                Url = "municipality",
-                                Value = new Coding
-                                {
-                                    System = Identificators.SYSTEM_MUNICIPALITY,
-                                    Code = patientModel.MunicipalityCode,
-                                    Display = MunicipalityMap.GetValue(patientModel.MunicipalityCode),
-                                }
+                                System = Identificators.SYSTEM_MUNICIPALITY,
+                                Code = patientModel.MunicipalityCode,
+                                Display = MunicipalityMap.GetValue(patientModel.MunicipalityCode)
                             }
                         }
                     }
-                };
-            }
+                }
+            };
 
-            if (address != null)
+        if (address != null)
+            resource.Address = new List<Address>
             {
-                resource.Address = new List<Address>
-                {
-                    address,
-                };
-            }
+                address
+            };
 
-            if (!string.IsNullOrWhiteSpace(patientModel.Contact))
+        if (!string.IsNullOrWhiteSpace(patientModel.Contact))
+            resource.Contact = new List<Patient.ContactComponent>
             {
-                resource.Contact = new List<Patient.ContactComponent>
+                new()
                 {
-                    new Patient.ContactComponent
+                    Name = new HumanName
                     {
-                        Name = new HumanName
-                        {
-                            Text = patientModel.Contact
-                        }
+                        Text = patientModel.Contact
                     }
-                };
-            }
+                }
+            };
 
-            return resource;
-        }
+        return resource;
     }
 }

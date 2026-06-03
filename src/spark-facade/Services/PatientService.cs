@@ -16,37 +16,36 @@ using Hl7.Fhir.Rest;
 using Spark.Engine.Extensions;
 using Task = System.Threading.Tasks.Task;
 
-namespace Spark.Facade.Services
+namespace Spark.Facade.Services;
+
+public class PatientService : FhirService
 {
-    public class PatientService : FhirService
+    public PatientService(
+        IFhirModel fhirModel,
+        IFhirServiceExtension[] extensions,
+        IFhirResponseFactory responseFactory,
+        ICompositeServiceListener serviceListener = null)
+        : base(fhirModel, extensions, responseFactory, serviceListener)
     {
-        public PatientService(
-            IFhirModel fhirModel,
-            IFhirServiceExtension[] extensions,
-            IFhirResponseFactory responseFactory,
-            ICompositeServiceListener serviceListener = null)
-            : base(fhirModel, extensions, responseFactory, serviceListener)
+    }
+
+    public override Task<FhirResponse> SearchAsync(string type, SearchParams searchCommand, int pageIndex = 0)
+    {
+        var queryService = GetFeature<IQueryService>();
+        var entries = queryService.GetAsync(type, searchCommand);
+
+        return Task.FromResult(CreateBundleResponse(Bundle.BundleType.Searchset, entries.ToEnumerable()));
+    }
+
+    private FhirResponse CreateBundleResponse(Bundle.BundleType type, IEnumerable<Entry> entries)
+    {
+        var bundle = new Bundle
         {
-        }
+            Type = type,
+            Total = entries.Count()
+        };
+        bundle.Append(entries);
 
-        public override Task<FhirResponse> SearchAsync(string type, SearchParams searchCommand, int pageIndex = 0)
-        {
-            var queryService = GetFeature<IQueryService>();
-            var entries = queryService.GetAsync(type, searchCommand);
-
-            return Task.FromResult(CreateBundleResponse(Bundle.BundleType.Searchset, entries.ToEnumerable()));
-        }
-
-        private FhirResponse CreateBundleResponse(Bundle.BundleType type, IEnumerable<Entry> entries)
-        {
-            var bundle = new Bundle
-            {
-                Type = type,
-                Total = entries.Count(),
-            };
-            bundle.Append(entries);
-
-            return _responseFactory.GetFhirResponse(bundle);
-        }
+        return _responseFactory.GetFhirResponse(bundle);
     }
 }

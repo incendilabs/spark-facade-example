@@ -12,63 +12,62 @@ using Spark.Engine.Extensions;
 using Spark.Engine.Service;
 using Spark.Facade.Services;
 
-namespace Spark.Facade.Controllers
+namespace Spark.Facade.Controllers;
+
+[Route("fhir/[controller]")]
+public class PatientController : ControllerBase
 {
-    [Route("fhir/[controller]")]
-    public class PatientController : ControllerBase
+    private const string ResourceTypePatient = "Patient";
+
+    private readonly IFhirService _fhirService;
+
+    public PatientController(PatientService service)
     {
-        private const string ResourceTypePatient = "Patient";
+        _fhirService = service;
+    }
 
-        private readonly IFhirService _fhirService;
+    [HttpGet("{id}")]
+    public async Task<ActionResult<FhirResponse>> Read(string id)
+    {
+        var parameters = new ConditionalHeaderParameters(Request);
+        var key = Key.Create(ResourceTypePatient, id);
+        return await _fhirService.ReadAsync(key, parameters);
+    }
 
-        public PatientController(PatientService service)
-        {
-            _fhirService = service;
-        }
+    [HttpPost]
+    public async Task<ActionResult<FhirResponse>> Create([FromBody] Patient patient)
+    {
+        var key = Key.Create(ResourceTypePatient, patient?.Id);
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<FhirResponse>> Read(string id)
-        {
-            var parameters = new ConditionalHeaderParameters(Request);
-            var key = Key.Create(ResourceTypePatient, id);
-            return await _fhirService.ReadAsync(key, parameters);
-        }
+        return await _fhirService.CreateAsync(key, patient);
+    }
 
-        [HttpPost]
-        public async Task<ActionResult<FhirResponse>> Create([FromBody] Patient patient)
-        {
-            var key = Key.Create(ResourceTypePatient, patient?.Id);
+    [HttpPut("{id}")]
+    public async Task<ActionResult<FhirResponse>> Update([FromBody] Resource resource, string id)
+    {
+        return await _fhirService.UpdateAsync(Key.Create(ResourceTypePatient, id), resource);
+    }
 
-            return await _fhirService.CreateAsync(key, patient);
-        }
+    [HttpPatch("{id}")]
+    public async Task<ActionResult<FhirResponse>> Patch([FromBody] Parameters patch, string id)
+    {
+        var key = Key.Create(ResourceTypePatient, id);
+        return await _fhirService.PatchAsync(key, patch);
+    }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<FhirResponse>> Update([FromBody] Resource resource, string id)
-        {
-            return await _fhirService.UpdateAsync(Key.Create(ResourceTypePatient, id), resource);
-        }
+    [HttpGet]
+    public async Task<ActionResult<FhirResponse>> Search()
+    {
+        var searchParams = Request.GetSearchParams();
 
-        [HttpPatch("{id}")]
-        public async Task<ActionResult<FhirResponse>> Patch([FromBody] Parameters patch, string id)
-        {
-            var key = Key.Create(ResourceTypePatient, id);
-            return await _fhirService.PatchAsync(key, patch);
-        }
+        return await _fhirService.SearchAsync(ResourceTypePatient, searchParams);
+    }
 
-        [HttpGet]
-        public async Task<ActionResult<FhirResponse>> Search()
-        {
-            var searchParams = Request.GetSearchParams();
+    [HttpPost("_search")]
+    public async Task<ActionResult<FhirResponse>> SearchByPost()
+    {
+        var searchParams = Request.GetSearchParamsFromBody();
 
-            return await _fhirService.SearchAsync(ResourceTypePatient, searchParams);
-        }
-
-        [HttpPost("_search")]
-        public async Task<ActionResult<FhirResponse>> SearchByPost()
-        {
-            var searchParams = Request.GetSearchParamsFromBody();
-
-            return await _fhirService.SearchAsync(ResourceTypePatient, searchParams);
-        }
+        return await _fhirService.SearchAsync(ResourceTypePatient, searchParams);
     }
 }
