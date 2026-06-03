@@ -5,7 +5,6 @@
  */
 
 using System.Threading.Tasks;
-using System.Web.Http;
 using Hl7.Fhir.Model;
 using Microsoft.AspNetCore.Mvc;
 using Spark.Engine.Core;
@@ -16,7 +15,7 @@ using Spark.Facade.Services;
 namespace Spark.Facade.Controllers
 {
     [Route("fhir/[controller]")]
-    public class PatientController : ApiController
+    public class PatientController : ControllerBase
     {
         private const string ResourceTypePatient = "Patient";
 

@@ -21,10 +21,11 @@ namespace Spark.Facade.Services
     public class PatientService : FhirService
     {
         public PatientService(
+            IFhirModel fhirModel,
             IFhirServiceExtension[] extensions,
             IFhirResponseFactory responseFactory,
             ICompositeServiceListener serviceListener = null)
-            : base(extensions, responseFactory, serviceListener)
+            : base(fhirModel, extensions, responseFactory, serviceListener)
         {
         }
 

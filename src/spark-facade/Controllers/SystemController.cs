@@ -5,7 +5,6 @@
  */
 
 using System.Threading.Tasks;
-using System.Web.Http;
 using Microsoft.AspNetCore.Mvc;
 using Spark.Engine;
 using Spark.Engine.Core;
@@ -14,7 +13,7 @@ using Spark.Engine.Service;
 namespace Spark.Facade.Controllers
 {
     [Route("fhir")]
-    public class SystemController : ApiController
+    public class SystemController : ControllerBase
     {
         private readonly IFhirService _fhirService;
         private readonly SparkSettings _settings;
