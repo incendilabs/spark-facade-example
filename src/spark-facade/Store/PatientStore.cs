@@ -13,23 +13,25 @@ using Hl7.Fhir.Model;
 using Microsoft.Data.SqlClient;
 using Spark.Engine;
 using Spark.Engine.Core;
+using Spark.Engine.Extensions;
 using Spark.Engine.Store.Interfaces;
 using Spark.Facade.Extensions;
 using Spark.Facade.Models;
-using Task = System.Threading.Tasks.Task;
 
 namespace Spark.Facade.Store
 {
     public class PatientStore : IFhirStore
     {
+        private readonly ILocalhost _localhost;
         private readonly StoreSettings _settings;
 
-        public PatientStore(StoreSettings settings)
+        public PatientStore(ILocalhost localhost, StoreSettings settings)
         {
+            _localhost = localhost;
             _settings = settings;
         }
 
-        public async Task AddAsync(Entry entry)
+        public async Task<Entry> AddAsync(Entry entry)
         {
             var resource = entry.Resource as Patient;
             var patientModel = resource.ToPatientModel();
@@ -38,12 +40,24 @@ namespace Spark.Facade.Store
             await connection.OpenAsync();
 
             var command = connection.CreateExistsCommandByPrimaryKeyFrom("Patient", "Id", entry.Key.ResourceId);
-            var resourceExists = (int)await command.ExecuteScalarAsync() == 1;
-            command = resourceExists
-                ? connection.CreateUpdateCommandFrom(patientModel, "Id", entry.Key.ResourceId)
-                : connection.CreateInsertCommandFrom(patientModel);
+            var resourceExists = (int?)await command.ExecuteScalarAsync() == 1;
+            if (resourceExists)
+            {
+                command = connection.CreateUpdateCommandFrom(patientModel, "Id", entry.Key.ResourceId);
+                await command.ExecuteNonQueryAsync();
+                return Entry.Create(resource.ExtractKey(), resource);
+            }
 
-            await command.ExecuteNonQueryAsync();
+            command = connection.CreateInsertCommandFrom(patientModel);
+            var id = await command.ExecuteScalarAsync();
+            return await GetAsync(
+                new Key
+                {
+                    Base = _localhost.DefaultBase.ToString(),
+                    TypeName = "Patient",
+                    ResourceId = id?.ToString(),
+                }
+            );
         }
 
         public async Task<Entry> GetAsync(IKey key)

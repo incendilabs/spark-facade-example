@@ -40,7 +40,7 @@ namespace Spark.Facade
             Configuration.Bind("StoreSettings", storeSettings);
 
             services.AddIdGenerator<GuidGenerator>();
-            services.AddFhirFacade(options =>
+            services.AddFhirFacadeWithMvc(options =>
             {
                 options.Settings = settings;
                 options.StoreSettings = storeSettings;
@@ -54,7 +54,7 @@ namespace Spark.Facade
 
                 options.FhirStores.TryAdd<IFhirStore, PatientStore>();
 
-                options.MvcOption = mvcOptions =>
+                options.MvcOptions = mvcOptions =>
                 {
                     mvcOptions.EnableEndpointRouting = false;
                     mvcOptions.InputFormatters.RemoveType<SystemTextJsonInputFormatter>();
@@ -71,7 +71,7 @@ namespace Spark.Facade
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseFhir(builder => builder.MapRoute(name: "default", template: "{controller}/{action}/{id?}"));
+            app.UseFhirWithMvc(builder => builder.MapRoute(name: "default", template: "{controller}/{action}/{id?}"));
         }
     }
 }

@@ -46,7 +46,8 @@ namespace Spark.Facade.Extensions
                 valuePart += $"@{propertyInfo.Name},";
             }
 
-            return $"{commandPart.TrimEnd(',')}){valuePart.TrimEnd(',')})";
+            var sql = $"{commandPart.TrimEnd(',')}){valuePart.TrimEnd(',')})";
+            return sql + ";SELECT SCOPE_IDENTITY() AS NewId;";
         }
 
         public static SqlCommand CreateUpdateCommandFrom(this SqlConnection connection, PatientModel patientModel, string primaryKeyName, object primaryKeyValue)
