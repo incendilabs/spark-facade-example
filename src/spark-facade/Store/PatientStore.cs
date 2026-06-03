@@ -18,78 +18,100 @@ using Spark.Engine.Store.Interfaces;
 using Spark.Facade.Extensions;
 using Spark.Facade.Models;
 
-namespace Spark.Facade.Store
+namespace Spark.Facade.Store;
+
+public class PatientStore : IFhirStore
 {
-    public class PatientStore : IFhirStore
+    private readonly ILocalhost _localhost;
+    private readonly StoreSettings _settings;
+
+    public PatientStore(ILocalhost localhost, StoreSettings settings)
     {
-        private readonly ILocalhost _localhost;
-        private readonly StoreSettings _settings;
+        _localhost = localhost;
+        _settings = settings;
+    }
 
-        public PatientStore(ILocalhost localhost, StoreSettings settings)
+    public async Task<Entry> AddAsync(Entry entry)
+    {
+        var resource = entry.Resource as Patient;
+        var patientModel = resource.ToPatientModel();
+
+        await using var connection = new SqlConnection(_settings.ConnectionString);
+        await connection.OpenAsync();
+
+        var command = connection.CreateExistsCommandByPrimaryKeyFrom("Patient", "Id", entry.Key.ResourceId);
+        var resourceExists = (int?)await command.ExecuteScalarAsync() == 1;
+        if (resourceExists)
         {
-            _localhost = localhost;
-            _settings = settings;
+            command = connection.CreateUpdateCommandFrom(patientModel, "Id", entry.Key.ResourceId);
+            await command.ExecuteNonQueryAsync();
+            return Entry.Create(resource.ExtractKey(), resource);
         }
 
-        public async Task<Entry> AddAsync(Entry entry)
-        {
-            var resource = entry.Resource as Patient;
-            var patientModel = resource.ToPatientModel();
-
-            await using var connection = new SqlConnection(_settings.ConnectionString);
-            await connection.OpenAsync();
-
-            var command = connection.CreateExistsCommandByPrimaryKeyFrom("Patient", "Id", entry.Key.ResourceId);
-            var resourceExists = (int?)await command.ExecuteScalarAsync() == 1;
-            if (resourceExists)
+        command = connection.CreateInsertCommandFrom(patientModel);
+        var id = await command.ExecuteScalarAsync();
+        return await GetAsync(
+            new Key
             {
-                command = connection.CreateUpdateCommandFrom(patientModel, "Id", entry.Key.ResourceId);
-                await command.ExecuteNonQueryAsync();
-                return Entry.Create(resource.ExtractKey(), resource);
+                Base = _localhost.DefaultBase.ToString(),
+                TypeName = "Patient",
+                ResourceId = id?.ToString()
             }
+        );
+    }
 
-            command = connection.CreateInsertCommandFrom(patientModel);
-            var id = await command.ExecuteScalarAsync();
-            return await GetAsync(
-                new Key
-                {
-                    Base = _localhost.DefaultBase.ToString(),
-                    TypeName = "Patient",
-                    ResourceId = id?.ToString(),
-                }
+    public async Task<Entry> GetAsync(IKey key)
+    {
+        await using var connection = new SqlConnection(_settings.ConnectionString);
+        var command = connection.CreateSelectCommandByPrimaryKeyFrom(
+            "Patient",
+            "Id",
+            key.ResourceId,
+            typeof(PatientModel)
+        );
+
+        await connection.OpenAsync();
+        var reader = await command.ExecuteReaderAsync();
+
+        var patientModel = reader.TransformTo<PatientModel>().FirstOrDefault();
+        if (patientModel == null)
+            throw new SparkException(
+                HttpStatusCode.NotFound,
+                $"No 'Patient' resource with id {key.ResourceId} was found."
             );
-        }
 
-        public async Task<Entry> GetAsync(IKey key)
-        {
-            await using var connection = new SqlConnection(_settings.ConnectionString);
-            var command = connection.CreateSelectCommandByPrimaryKeyFrom("Patient", "Id", key.ResourceId, typeof(PatientModel));
+        var resource = patientModel.ToPatient();
 
-            await connection.OpenAsync();
-            var reader = await command.ExecuteReaderAsync();
+        return Entry.Create(key, resource);
+    }
 
-            var patientModel = reader.TransformTo<PatientModel>().FirstOrDefault();
-            if (patientModel == null) throw new SparkException(HttpStatusCode.NotFound, $"No 'Patient' resource with id {key.ResourceId} was found.");
+    public IList<Entry> Get(IEnumerable<IKey> localIdentifiers, IEnumerable<string> elements = null)
+    {
+        throw new NotImplementedException();
+    }
 
-            var resource = patientModel.ToPatient();
+    public Task<IList<Entry>> GetAsync(IEnumerable<IKey> localIdentifiers, IEnumerable<string> elements = null)
+    {
+        throw new NotImplementedException();
+    }
 
-            return Entry.Create(key, resource);
-        }
+    public Task<IList<Entry>> GetAsync(IEnumerable<IKey> localIdentifiers)
+    {
+        throw new NotImplementedException();
+    }
 
-        public IList<Entry> Get(IEnumerable<IKey> localIdentifiers, IEnumerable<string> elements = null)
-        {
-            throw new NotImplementedException();
-        }
+    public void Add(Entry entry)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<IList<Entry>> GetAsync(IEnumerable<IKey> localIdentifiers, IEnumerable<string> elements = null)
-        {
-            throw new NotImplementedException();
-        }
+    public Entry Get(IKey key)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<IList<Entry>> GetAsync(IEnumerable<IKey> localIdentifiers) =>  throw new NotImplementedException();
-
-        public void Add(Entry entry) => throw new NotImplementedException();
-        public Entry Get(IKey key) => throw new NotImplementedException();
-        public IList<Entry> Get(IEnumerable<IKey> localIdentifiers) => throw new NotImplementedException();
+    public IList<Entry> Get(IEnumerable<IKey> localIdentifiers)
+    {
+        throw new NotImplementedException();
     }
 }
